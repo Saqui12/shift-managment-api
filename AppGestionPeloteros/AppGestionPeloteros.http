@@ -1,0 +1,6 @@
+@AppGestionPeloteros_HostAddress = http://localhost:5088
+
+GET {{AppGestionPeloteros_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
