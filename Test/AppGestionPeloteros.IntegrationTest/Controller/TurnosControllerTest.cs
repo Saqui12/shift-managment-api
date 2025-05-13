@@ -139,10 +139,10 @@ namespace Test.AppGestionPeloteros.IntegrationTest.Controller
         [Fact]
         public async Task GetByWeek_WhenThereIsOneTurnoInWeek_ReturnsOk()
         {
-            //https://localhost:44334/api/Turno/week
+            //"https://tusitio.com/turnos/week?week=2024-05-13"
             // Arrange
             var week = "2025-05-06";
-            var url = $"/api/Turno/week?={week}";
+            var url = $"/api/Turno/week?week={week}";
             // Act
             var response = await _client.GetAsync(url);
             // Assert
