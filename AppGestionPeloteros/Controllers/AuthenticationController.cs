@@ -15,7 +15,7 @@ namespace AppGestionPeloteros.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginUser loginUser)
         {
-            // Call the authentication service to perform login
+           
             var result = await _service.Login(loginUser);
             if (result.Success)
             {
@@ -23,7 +23,7 @@ namespace AppGestionPeloteros.Controllers
                 {
                     HttpOnly = true,
                     Secure = true,
-                    SameSite = SameSiteMode.Lax,
+                    SameSite = SameSiteMode.None,
                     Path = "/"
                 });
                 return Ok(result);
@@ -78,7 +78,7 @@ namespace AppGestionPeloteros.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            // Call the authentication service to perform user deletion
+            
             var result = await _service.DeleteUser(id);
             if (result.Success)
             {
@@ -92,7 +92,7 @@ namespace AppGestionPeloteros.Controllers
         [HttpGet("{email}")]
         public async Task<IActionResult> GetUserByEmail(string email)
         {
-            // Call the authentication service to get user details
+            
             var result = await _service.GetByEmail(email);
             if (result.Success)
             {
