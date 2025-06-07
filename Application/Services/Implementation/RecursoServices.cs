@@ -17,7 +17,7 @@ namespace Application.Services.Implementation
             //Add validation 
 
             if (recurso == null)
-                throw new ArgumentNullException("Recurso cannot be null");
+                throw new ArgumentNullException("values cannot be null");
 
             var _recurso = mapper.Map<Recurso>(recurso);
             _repo.Add(_recurso);
@@ -36,22 +36,22 @@ namespace Application.Services.Implementation
         {
             var recurso = await _repo.GetByIdAsync(recursoid);
             if (recurso == null)
-                return new ServiceResponse { Message = "Recurso not found" };
+                return new ServiceResponse { Message = "Resource not found" };
             _repo.Delete(recurso);
             await unitOfWork.SaveChangesAsync();
-            return new ServiceResponse { Message = "Recurso deleted successfully" };
+            return new ServiceResponse { Message = "Resource deleted successfully" };
         }
 
         public async Task<ServiceResponse> UpdateRecurso(Guid recursoid, AddRecursoDto recurso)
         {
             var _recurso = await _repo.GetByIdAsync(recursoid);
             if (_recurso == null)
-                return new ServiceResponse { Message = "Recurso not found" };
+                return new ServiceResponse { Message = "Resource not found" };
 
             mapper.Map(recurso, _recurso);
             _repo.Update(_recurso);
             await unitOfWork.SaveChangesAsync();
-            return new ServiceResponse { Message = "Recurso updated successfully" };
+            return new ServiceResponse { Message = "Resource updated successfully" };
         }
     }
 }

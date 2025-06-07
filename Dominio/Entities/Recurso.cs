@@ -18,7 +18,7 @@ public partial class Recurso
 
     public virtual ICollection<Bloqueo> Bloqueos { get; set; } = new List<Bloqueo>();
 
-    public virtual ICollection<HorariosDisponibilidad> HorariosDisponibilidads { get; set; } = new List<HorariosDisponibilidad>();
+    public virtual ICollection<HorariosDisponibilidad> HorariosDisponibilidad { get; set; } = new List<HorariosDisponibilidad>();
 
     public virtual ICollection<Turno> Turnos { get; set; } = new List<Turno>();
 }

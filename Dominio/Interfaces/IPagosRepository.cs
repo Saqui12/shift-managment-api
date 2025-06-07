@@ -6,6 +6,7 @@ namespace Dominio.Interfaces
 {
     public interface IPagosRepository: IBaseRepository<Pago>
     {
-        Task <IEnumerable<Pago>> GetAllFilterAsync(PagosParameters param);
+        Task <PagedResults<Pago>> GetAllFilterAsync(PagosParameters param);
+        Task<Pago?> GetByTurnoIdAsync(Guid id);
     }
 }

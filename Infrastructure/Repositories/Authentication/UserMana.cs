@@ -7,8 +7,9 @@ using System.Security.Claims;
 
 namespace Infrastructure.Repositories.Authentication
 {
-    public class UserMana(UserManager<AppUser> usermanager, IRoleMana rolemanager, PeloterosDbContext context) : IUserMana
+    public class UserMana(UserManager<AppUser> usermanager, IRoleMana rolemanager) : IUserMana
     {
+     
         public async Task<bool> CreateUser(AppUser user)
         {
             AppUser? _user = await GetUserByEmail(user.Email!);
@@ -58,21 +59,29 @@ namespace Infrastructure.Repositories.Authentication
             return (await usermanager.UpdateAsync(_user)).Succeeded ? _user : null!;
         }
 
-        public async Task<bool> LoginUser(AppUser user)
+        public async Task<bool> LoginUser(string email , string password)
         {
-            var _user = await usermanager.FindByEmailAsync(user!.Email!);
+            var _user = await usermanager.FindByEmailAsync(email);
             if (_user is null)
                 return false;
 
-            string? Rolename = await rolemanager.GetRoleIdByEmail(user!.Email!);
+            string? Rolename = await rolemanager.GetRoleIdByEmail(email);
             if (Rolename is null) return false;
 
-            return await usermanager.CheckPasswordAsync(_user, user!.PasswordHash!);
+            return await usermanager.CheckPasswordAsync(_user, password);
 
         }
         public async Task<AppUser> UpdateUserAsync(AppUser user)
         {
             return (await usermanager.UpdateAsync(user)).Succeeded ? user : null!;
         }
+
+        public async Task<string> GeneratePasswordResetToken(AppUser user) =>  await usermanager.GeneratePasswordResetTokenAsync(user);
+        public async Task<IdentityResult> ResetPassword(AppUser user, string token, string password)
+        {
+            var result =await usermanager.ResetPasswordAsync(user, token, password);
+            return result;
+        }
+        
     }
 }

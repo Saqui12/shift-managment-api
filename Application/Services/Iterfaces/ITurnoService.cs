@@ -8,11 +8,10 @@ namespace Application.Services.Iterfaces
     {
 
         Task<IEnumerable<TurnoDto>> GetAllAsync(CancellationToken cancellationToken = default);
-        Task<IEnumerable<TurnoDto>> GetFiltered(TurnosParameters param);
-        Task<IEnumerable<TurnoDto>> GetByWeek(DateOnly? week);
+        Task<PagedResults<TurnoDto>> GetFiltered(TurnosParameters param);
         Task<TurnoDto> GetByIdAsync(Guid Id, CancellationToken cancellationToken = default);
         Task<TurnoDto> CreateAsync(TurnoCompletoDto turnoCompleto, CancellationToken cancellationToken = default);
-        Task UpdateAsync(Guid Id, TurnoUpdateDto Dto, CancellationToken cancellationToken = default);
+        Task<ServiceResponse> UpdateAsync(Guid Id, TurnoUpdateDto Dto, CancellationToken cancellationToken = default);
         Task DeleteAsync(Guid Id, CancellationToken cancellationToken = default);
 
 

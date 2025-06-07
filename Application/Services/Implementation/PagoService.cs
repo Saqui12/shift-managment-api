@@ -16,12 +16,21 @@ namespace Application.Services.Implementation
     public class PagoService(IPagosRepository _repo,IUnitOfWork _unit, IMapper _mapper
         ,IValidationService _validator, IValidator<PagoCreationDto> pagoCreation ) : IPagosService
     {
+        public async Task<PagoDto> GetByTurnoAsync(Guid id)
+        {
+            var pago = await _repo.GetByTurnoIdAsync(id);
+            if (pago is null)
+                throw new KeyNotFoundException("Payment not found");
+            return _mapper.Map<PagoDto>(pago);
+        }
+            
 
-        public async Task<IEnumerable<PagoWithClient>> GetAllFilterAsync(PagosParameters param,CancellationToken cancellationToken = default)
+        public async Task<PagedResults<PagoWithClient>> GetAllFilterAsync(PagosParameters param,CancellationToken cancellationToken = default)
         {
             var lista = await _repo.GetAllFilterAsync(param);
-            var listaPagos = _mapper.Map<IEnumerable<PagoWithClient>>(lista);
-            return listaPagos;
+            var listaPagos = _mapper.Map<IEnumerable<PagoWithClient>>(lista.Items);
+
+            return new PagedResults<PagoWithClient>(listaPagos, lista.TotalCount, lista.PageNumber, lista.PageSize);
 
         }
         public async Task<PagoDto> CreateAsync(PagoCreationDto pagoAdd, CancellationToken cancellationToken = default)
@@ -36,15 +45,17 @@ namespace Application.Services.Implementation
             return _mapper.Map<PagoDto>(pago);
         }
 
-        public async Task UpdateAsync(Guid Id, PagoDto Dto, CancellationToken cancellationToken = default)
+        public async Task UpdateAsync(Guid Id, PagoUpdateDto Dto, CancellationToken cancellationToken = default)
         {
             var pago = await _repo.GetByIdAsync(Id);
             if (pago is null)
-                throw new KeyNotFoundException("El pago no existe");
+                throw new KeyNotFoundException("Payment not found");
             if (Id != pago.PagoId)
-                throw new ArgumentException("El id no coincide con el pago a modificar");
+                throw new ArgumentException("id does not match with the payment");
+           var _pago = _mapper.Map(Dto,pago);
+  
+            _repo.Update(_pago);
 
-            _repo.Update(_mapper.Map<Pago>(Dto));
             await _unit.SaveChangesAsync();
 
         }

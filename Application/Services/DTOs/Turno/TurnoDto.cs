@@ -10,6 +10,6 @@ namespace Application.Services.DTOs.Turno
      
         public ClientedelTurnoDto Cliente { get; set; }
 
-        public RecursoDto Recurso { get; set; }
+        public RecursoTurnoDto Recurso { get; set; }
     }
 }

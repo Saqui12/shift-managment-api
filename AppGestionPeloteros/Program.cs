@@ -15,8 +15,13 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
+builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddControllers()
+
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<OnActionFilterLog>();
+})
     .AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
@@ -25,7 +30,18 @@ builder.Services.AddControllers()
 
 builder.Services.AddAppGestionPeloterosDI(builder.Configuration);
 builder.Services.AddTransient<ErrorHandlingMiddleware>();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder =>
+        {
+            builder.WithOrigins("https://blue-plant-09cf3ff03.6.azurestaticapps.net", "https://localhost:5173", "https://localhost:5174")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+             .WithExposedHeaders("X-Pagination");
+        });
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -61,20 +77,19 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<PeloterosDbContext>();
-    if (db.Database.IsRelational()) // Check if a relational provider is used
+    if (db.Database.IsRelational()) 
     {
-        db.Database.Migrate();
+        //db.Database.Migrate();
     }
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-}
     app.UseSwagger();
     app.UseSwaggerUI();
+}
 
-
+app.UseCors("CorsPolicy");
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseHttpsRedirection();
 

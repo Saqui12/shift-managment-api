@@ -7,6 +7,7 @@ namespace Dominio.Interfaces
 {
     public interface IBloqueoRepository : IBaseRepository<Bloqueo>
     {
-        Task<IEnumerable<Bloqueo>> GetFiltered(BloqueoParameters param);
+        Task<PagedResults<Bloqueo>> GetFiltered(BloqueoParameters param);
+        Task<IEnumerable<Bloqueo>> GetOverBloqueo(Guid recursoId, DateOnly fecha, TimeOnly horaInicio, TimeOnly horaFinal);
     }
 }

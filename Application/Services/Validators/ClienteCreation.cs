@@ -25,14 +25,7 @@ namespace Application.Services.Validators
                 .WithMessage("El email no es valido");
             RuleFor(x => x.Telefono)
                 .NotEmpty()
-                .WithMessage("El telefono no puede estar vacio")
-                .Matches(@"^\d{10}$")
-                .WithMessage("El telefono debe tener 10 digitos");
-            RuleFor(x => x.Activo)
-                .NotNull()
-                .WithMessage("El estado no puede estar vacio")
-                .Must(x => x == true || x == false)
-                .WithMessage("El estado debe ser verdadero o falso");
+                .WithMessage("El telefono no puede estar vacio");
         }
     }
 }

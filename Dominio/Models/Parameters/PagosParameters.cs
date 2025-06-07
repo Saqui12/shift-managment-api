@@ -8,11 +8,13 @@ namespace Dominio.Models.Parameters
     public class PagosParameters : RequestParameters
     {
         public string? Estado { get; set; }
-        public string? MetodoPago { get; set; }       
-        public DateOnly FechaHasta { get; set; } = DateOnly.FromDateTime(DateTime.Now).AddMonths(12);
-        public DateOnly FechaDesde { get; set; } = DateOnly.FromDateTime(DateTime.MinValue);
+        public string? MetodoPago { get; set; }
+        public DateTime FechaHasta { get; set; } = DateTime.UtcNow.AddYears(1000);
+        public DateTime FechaDesde { get; set; } = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc);
+        public int MontoDesde { get; set; } = 0;
+        public int MontoHasta { get; set; } = int.MaxValue;
 
-        public string? ApellidoCliente { get; set; }
+        public string? NombreApellidoCliente { get; set; }
 
         public PagosParameters()
         {

@@ -22,9 +22,11 @@ namespace Infrastructure
 
 
 
-            services.AddDbContext<PeloterosDbContext>(options =>
-                 options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionString_DB")));
+            //services.AddDbContext<PeloterosDbContext>(options =>
+            //     options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionString_DB")));
 
+            services.AddDbContext<PeloterosDbContext>(options =>
+                 options.UseNpgsql(configuration["ConnectionString_DB"]));
 
 
 
@@ -64,12 +66,12 @@ namespace Infrastructure
                 options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
                 options.User.RequireUniqueEmail = true;
                 options.Password.RequireDigit = true;
-                options.Password.RequiredLength = 6;
+                options.Password.RequiredLength = 8;
                 options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = true;
             }).AddRoles<IdentityRole>()
-              .AddEntityFrameworkStores<PeloterosDbContext>();
+              .AddEntityFrameworkStores<PeloterosDbContext>()
+              .AddDefaultTokenProviders(); 
 
             services.AddAuthentication(options =>
             {
@@ -89,6 +91,18 @@ namespace Infrastructure
                       ValidAudience = configuration["Jwt:Audience"],
                       ClockSkew = TimeSpan.Zero,
                       IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+                  };
+                  options.Events = new JwtBearerEvents
+                  {
+                      OnMessageReceived = context =>
+                      {
+                          // Extraer token desde la cookie
+                          if (context.Request.Cookies.ContainsKey("JWT"))
+                          {
+                              context.Token = context.Request.Cookies["JWT"];
+                          }
+                          return Task.CompletedTask;
+                      }
                   };
               });
 
