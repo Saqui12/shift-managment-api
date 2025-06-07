@@ -14,19 +14,34 @@ namespace Infrastructure.Repositories
         public PagosRepository(PeloterosDbContext context) : base(context)
         {
         }
+        public async Task<Pago?> GetByTurnoIdAsync(Guid id)
+        {
+            return await _context.Pagos
+                              .AsNoTracking()
+                              .FirstOrDefaultAsync(p => p.TurnoId == id);
+        } 
 
-        public async Task<IEnumerable<Pago>> GetAllFilterAsync(PagosParameters param)
+        public async Task<PagedResults<Pago>> GetAllFilterAsync(PagosParameters param)
         {
             var query = _context.Pagos.AsQueryable();
 
-            if (!string.IsNullOrEmpty(param.ApellidoCliente))
-                query = query.Where(x => x.Turno.Cliente.Apellido == param.ApellidoCliente);
+            if (!string.IsNullOrEmpty(param.NombreApellidoCliente))
+                query = query.Where(x => x.Turno.Cliente.Apellido.ToLower().Contains(param.NombreApellidoCliente.ToLower())
+                                      || x.Turno.Cliente.Nombre.ToLower().Contains(param.NombreApellidoCliente.ToLower()));
+            
             if(!string.IsNullOrEmpty(param.Estado))
-                query = query.Where(x => x.Estado == param.Estado);
+                query = query.Where(x => x.Estado!.ToLower().Contains(param.Estado.ToLower()));
+           
+            if (!string.IsNullOrEmpty(param.MetodoPago))
+                query = query.Where(x => x.MetodoPago.ToLower().Contains(param.MetodoPago.ToLower()));
 
-           //   query = query.Where(x => x.FechaPago >= param.FechaDesde && x.FechaPago <= param.FechaHasta);
+              query = query.Where(x => x.FechaPago >= param.FechaDesde && x.FechaPago <= param.FechaHasta);
 
-            return await query.AsNoTracking()              
+              query = query.Where(x => x.Monto >= param.MontoDesde && x.Monto <= param.MontoHasta);
+
+
+            var count= await query.CountAsync();
+            var items =await query.AsNoTracking()              
                 .OrderByDescending(p => p.FechaPago)
                 .ThenByDescending(g => g.Turno.HoraInicio)
                 .Skip((param.PageNumber - 1) * param.PageSize)
@@ -34,6 +49,7 @@ namespace Infrastructure.Repositories
                 .Include(p => p.Turno)
                  .ThenInclude(t => t.Cliente)
                 .ToListAsync();
+            return new PagedResults<Pago>(items, count, param.PageNumber, param.PageSize);
         }
     }
 

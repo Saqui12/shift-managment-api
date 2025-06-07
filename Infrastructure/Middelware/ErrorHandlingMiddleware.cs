@@ -25,7 +25,7 @@ namespace Infrastructure.Middelware
         {
             var logger = context.RequestServices.GetService<ILogger<ErrorHandlingMiddleware>>();
             // Log the exception
-              logger.LogError(exception, "An unhandled exception occurred.");
+              logger?.LogError(exception, "An unhandled exception occurred.");
             // Set the response status code and content type
             context.Response.ContentType = "application/json";
 

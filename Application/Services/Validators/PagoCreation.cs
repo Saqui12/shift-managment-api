@@ -17,11 +17,11 @@ namespace Application.Services.Validators
             RuleFor(x => x.MetodoPago)
                 .NotEmpty()
                 .WithMessage("El metodo de pago no puede estar vacio")
-                .Must(x => x == "efectivo" || x == "tarjeta" || x == "mercadopago" || x == "cuentadni" || x == "transferencia")
-                .WithMessage("El estado debe ser uno de los siguientes : efectivo ; tarjeta ; mercadopago ; cuentadni ; transferencia");
+                .Must(x => x == "cash" || x == "credit-card" || x == "mercadopago" || x == "on-delivery" || x == "transfer")
+                .WithMessage("El metodo de pago debe ser uno de los siguientes : cash ; credit-card ; mercadopago ; on-delivery ; transfer");
             RuleFor(x => x.Estado)
-                .Must(x => x == "pendiente" || x == "completado" || x == "cancelado")
-                .WithMessage("El estado debe ser uno de los siguientes : pendiente ; completado ; cancelado");
+                .Must(x => x == "pending" || x == "completed" || x == "canceled")
+                .WithMessage("El estado de pago debe ser uno de los siguientes : pending ; completed ; canceled");
         }
     }
 }

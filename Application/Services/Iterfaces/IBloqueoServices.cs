@@ -3,6 +3,7 @@
 using Application.Services.DTOs;
 using Application.Services.DTOs.Bloqueo;
 using Dominio.Entities;
+using Dominio.Models.Parameters;
 
 namespace Application.Services.Iterfaces
 {
@@ -12,5 +13,7 @@ namespace Application.Services.Iterfaces
         Task<IEnumerable<Bloqueo>> GetBloqueos();
         Task<ServiceResponse> DeleteBloqueo(Guid bloqueoid);
         Task<ServiceResponse> UpdateBloqueo(Guid bloqueoid, AddBloqueoDto bloqueos);
+
+        Task<PagedResults<Bloqueo>> GetFilteredBloqueos(BloqueoParameters param);
     }
 }

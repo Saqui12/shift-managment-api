@@ -34,7 +34,7 @@ namespace Dominio.Seed
                   {
                       HorariosDisponibilidadId = Guid.Parse("07bc1990-5e8d-4237-a9e4-8e6b8ba51237"),
                       RecursoId = Guid.Parse("07bc1990-5e8d-4237-a9e4-8e6b8ba56537"),
-                      DiaSemana = "Wendesday",
+                      DiaSemana = "Wednesday",
                       HoraApertura = new TimeOnly(8, 0),
                       HoraCierre = new TimeOnly(20, 0)
 

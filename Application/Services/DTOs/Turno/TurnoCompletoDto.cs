@@ -1,14 +1,11 @@
-﻿
-using Application.Services.DTOs.Cliente;
+﻿using Application.Services.DTOs.Cliente;
 using Application.Services.DTOs.Pago;
-using Application.Services.DTOs.Turno;
 
-namespace Application.Services.DTOs
+namespace Application.Services.DTOs.Turno
 {
     public class TurnoCompletoDto
     {
         public TurnoCreationDto Turnocreation { get; set; }
-        public ClienteCreationDto Clientecreation { get; set; }
         public PagoCreationDto Pagocreation { get; set; }
     }
 }

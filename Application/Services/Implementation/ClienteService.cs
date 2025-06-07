@@ -1,4 +1,5 @@
 ﻿using Application.Services.DTOs.Cliente;
+using Application.Services.DTOs.Turno;
 using Application.Services.Iterfaces;
 using Application.Services.Validators.Iterface;
 using Dominio.Entities;
@@ -46,10 +47,12 @@ namespace Application.Services.Implementation
             return _mapper.Map<IEnumerable<ClienteDto>>( await _repo.GetAllAsync() ) ;
             
         }
-        public async Task<IEnumerable<ClienteFilteredDto>> GetAllFilterAsync(ClientesParameters param)
+        public async Task<PagedResults<ClienteFilteredDto>> GetAllFilterAsync(ClientesParameters param)
         {
             var query = await _repo.GetAllFilterAsync(param);
-            return _mapper.Map<IEnumerable<ClienteFilteredDto>>(query);
+            var item = _mapper.Map<IEnumerable<ClienteFilteredDto>>(query.Items);
+            return new PagedResults<ClienteFilteredDto>(item, query.TotalCount, query.PageNumber, query.PageSize);
+           
         }
 
         public async Task UpdateAsync(Guid Id, ClienteDto Dto, CancellationToken cancellationToken = default)

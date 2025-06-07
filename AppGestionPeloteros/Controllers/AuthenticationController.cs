@@ -1,7 +1,10 @@
-﻿using Application.Services.DTOs.User;
+﻿using Application.Services.DTOs.Auth;
+using Application.Services.DTOs.User;
 using Application.Services.Iterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.Threading.Tasks;
 
 namespace AppGestionPeloteros.Controllers
 {
@@ -16,6 +19,13 @@ namespace AppGestionPeloteros.Controllers
             var result = await _service.Login(loginUser);
             if (result.Success)
             {
+                Response.Cookies.Append("JWT", result.Token, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Lax,
+                    Path = "/"
+                });
                 return Ok(result);
             }
             return BadRequest(result);
@@ -31,11 +41,31 @@ namespace AppGestionPeloteros.Controllers
             }
             return BadRequest(result);
         }
+
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> GetAllUser()
+        {
+            var userDto = await _service.GetAllUser();
+            return Ok(userDto);
+        }
+
+
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> Me()
+        {
+            var userDto = await _service.GetAuthenticatedUserAsync(User);
+            return Ok(userDto);
+        }
+
+
         [Authorize]
         [HttpGet("RefreshToken/{refreshToken}")]
         public async Task<IActionResult> RefreshToken(string refreshToken)
         {
-            // Call the authentication service to perform token renewal
+       
             var result = await _service.RenewToken(refreshToken);
             if (result.Success)
             {
@@ -43,20 +73,24 @@ namespace AppGestionPeloteros.Controllers
             }
             return BadRequest(result);
         }
-        [HttpDelete("{email}")]
-       [Authorize("Admin")]
-        public async Task<IActionResult> DeleteUser(string email)
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(string id)
         {
             // Call the authentication service to perform user deletion
-            var result = await _service.DeleteUser(email);
+            var result = await _service.DeleteUser(id);
             if (result.Success)
             {
                 return Ok(result);
             }
             return BadRequest(result);
         }
+
+
+        [Authorize(Roles = "Admin")]
         [HttpGet("{email}")]
-        [Authorize("Admin")]
         public async Task<IActionResult> GetUserByEmail(string email)
         {
             // Call the authentication service to get user details
@@ -67,17 +101,82 @@ namespace AppGestionPeloteros.Controllers
             }
             return BadRequest(result);
         }
-        [HttpPut]
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("getUserRole/{email}")]
+        public async Task<IActionResult> GetUserRoleByEmail(string email)
+        {
+            // Call the authentication service to get user details
+            var result = await _service.GetRoleIdByEmail(email);
+            if (!result.IsNullOrEmpty())
+            {
+                return Ok(result);
+            }
+            return NotFound(result);
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("AddUserToRole/{userid}")]
+        public async Task<IActionResult> AddUserToRole(string userid, [FromBody] string role)
+        {
+            // Call the authentication service to get user details
+            var result = await _service.AddUserToRole(userid, role);
+            if (result)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+
         [Authorize]
-        public async Task<IActionResult> UpdateUser([FromBody] UpdateUser updateUser)
+        [HttpPut("updateuser/{id}")]
+        public async Task<IActionResult> UpdateUser(string userid, [FromBody] UpdateUser updateUser)
         {
             // Call the authentication service to perform user update
-            var result = await _service.Update(updateUser);
+            var result = await _service.Update(userid , updateUser);
             if (result.Success)
             {
                 return Ok(result);
             }
             return BadRequest(result);
         }
+
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            // Borrar la cookie del token JWT
+            Response.Cookies.Delete("JWT", new CookieOptions
+            {
+                Path = "/",
+                Secure = true,
+                SameSite = SameSiteMode.Lax
+            });
+
+            return Ok(new { message = "Sesión cerrada correctamente" });
+        }
+        [Authorize]
+        [HttpPost("resetPassword/{id}")]
+        public async Task<IActionResult> resetPassword(string id, [FromBody] PasswordResetDto pass)
+        {
+            var result = await _service.ResetPassword(id, pass);
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description).ToList();
+
+                return BadRequest(new
+                {
+                    message = "Error al restablecer la contraseña",
+                    errors = errors
+                });
+
+            }
+            
+            
+            return Ok(new { message = "Contraseña restablecida correctamente" });
+        }
+
     }
 }

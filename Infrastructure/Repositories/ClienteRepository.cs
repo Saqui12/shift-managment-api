@@ -4,7 +4,6 @@ using Dominio.Interfaces;
 using Dominio.Models.Parameters;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 
 namespace Infrastructure.Repositories
 {
@@ -14,28 +13,27 @@ namespace Infrastructure.Repositories
             : base(context)
         {
         }
-        public async Task<IEnumerable<Cliente>> GetAllFilterAsync(ClientesParameters param)
+        public async Task<PagedResults<Cliente>> GetAllFilterAsync(ClientesParameters param)
         {
             var query = _context.Clientes.AsQueryable();
 
-            if (!string.IsNullOrEmpty(param.Apellido))
-                query = query.Where(x => x.Apellido == param.Apellido);
-            if (!string.IsNullOrEmpty(param.Nombre))
-                query = query.Where(x => x.Nombre == param.Nombre);
-            if (!string.IsNullOrEmpty(param.Email))
-                query = query.Where(x => x.Email == param.Email);
+            if (!string.IsNullOrEmpty(param.NombreApellidoEmail))
+                query = query.Where(x => x.Nombre != null && x.Nombre.ToLower().Contains(param.NombreApellidoEmail.ToLower()) ||
+                                         x.Apellido != null && x.Apellido.ToLower().Contains(param.NombreApellidoEmail.ToLower()) ||
+                                         x.Email != null && x.Email.ToLower().Contains(param.NombreApellidoEmail.ToLower()));
 
+            var count = await query.CountAsync();
+            var clientes = await query.AsNoTracking()
+          .OrderByDescending(p => p.FechaRegistro)
+          .ThenByDescending(g => g.Turnos.Max(f => f.Fecha))
+          .Skip((param.PageNumber - 1) * param.PageSize)
+          .Take(param.PageSize)
+          .Include(p => p.Turnos.Take(1))
+          .ToListAsync();
 
-
-            return await query.AsNoTracking()
-                .OrderByDescending(p => p.FechaRegistro)
-                .ThenByDescending(g => g.Turnos.Max(f => f.Fecha))
-                .Skip((param.PageNumber - 1) * param.PageSize)
-                .Take(param.PageSize)
-                .Include(p => p.Turnos)
-                .ToListAsync();
+            return new PagedResults<Cliente>(clientes, count, param.PageNumber, param.PageSize);
         }
-    } 
-    
-    
+    }
+
+
 }

@@ -28,6 +28,7 @@ namespace Application
             services.AddScoped<IValidator<PagoCreationDto>, PagoCreation>();
             services.AddScoped<IValidator<CreateUser>, CreationUser>();
             services.AddScoped<IValidator<UpdateUser>, UpdateUserCreation>();
+            services.AddScoped<IValidator<PagoDto>, PagoUpdate>();
             services.AddScoped<IValidationService, ValidationService>();
 
             services.AddScoped<ITurnoService, TurnoService>();
@@ -36,6 +37,9 @@ namespace Application
             services.AddScoped<IClientesService, ClienteService>();
             services.AddScoped<IRecursoServices, RecursoServices>();
             services.AddScoped<IBloqueoServices, BloqueoService>();
+            services.AddScoped<IHorarioDisponibilidadService, HorarioDisponibilidadService>();
+            services.AddScoped<IoauthService, oauthService>();
+            services.AddHttpClient();
 
             return services;
         }

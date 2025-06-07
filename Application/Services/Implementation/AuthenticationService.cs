@@ -1,12 +1,14 @@
 ﻿using Application.Services.DTOs;
+using Application.Services.DTOs.Auth;
 using Application.Services.DTOs.User;
 using Application.Services.Iterfaces;
-using Application.Services.Validators;
 using Application.Services.Validators.Iterface;
 using Dominio.Entities.Identity;
 using Dominio.Interfaces.Authentication;
 using FluentValidation;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace Application.Services.Implementation
 {
@@ -18,16 +20,23 @@ namespace Application.Services.Implementation
         //"email": "adminadmin@gmail.com",
         //"password": "Admin123!Admin123",
 
+        public async Task<IEnumerable<UserDto>> GetAllUser()
+        {
+            var users = await usermana.GetAllUsers();
+            if (users is null || !users.Any())
+                return new List<UserDto>();
+            
+             var _user =  _mapper.Map<IEnumerable<UserDto>>(users);
+            return _user;
+        }
         public async Task<LoginResponse> Login(LoginUser loginuser)
         {
             if (loginuser == null)
                 return new LoginResponse { Message = "Error al iniciar sesion" };
             // validation
 
-            var user = _mapper.Map<AppUser>(loginuser);
-            user.PasswordHash = loginuser.Password;
-
-            bool LoginResult = await usermana.LoginUser(user);
+         
+            bool LoginResult = await usermana.LoginUser(loginuser.Email,loginuser.Password);
             if (!LoginResult)
                 return new LoginResponse { Message = "Error al iniciar sesion" };
 
@@ -99,16 +108,16 @@ namespace Application.Services.Implementation
 
             return new ServiceResponse { Message = "Usuario registrado con exito", Success = true };
         }
-        public async Task<ServiceResponse> DeleteUser(string email)
+        public async Task<ServiceResponse> DeleteUser(string id)
         {
-            if (email == null)
-                return new ServiceResponse { Message = "Debe ingresar un email" };
-
-            var user = await usermana.GetUserByEmail(email);
+            if (id == null)
+                return new ServiceResponse { Message = "Debe ingresar un id" };
+            var user= await usermana.GetUserById(id);
+  
             if (user is null)
                 return new ServiceResponse { Message = "Usuario no encontrado" };
 
-            await usermana.DeleteUserByEmail(email);
+            await usermana.DeleteUserByEmail(user.Email!);
             return new ServiceResponse { Message = "Usuario eliminado con exito", Success = true };
         }
 
@@ -123,13 +132,13 @@ namespace Application.Services.Implementation
             return new ServiceResponseData { Message = "Usuario encontrado", Success = true, Data = user };
 
         }
-        public async Task<ServiceResponseData> Update(UpdateUser user)
+        public async Task<ServiceResponseData> Update(string id,UpdateUser user)
         {
             if (user == null)
                 return new ServiceResponseData { Message = "Debe ingresar un usuario" };
 
             await _validator.ValidateAsync(user, updateUserValidate);
-            var _user = await usermana.GetUserByEmail(user.Email!);
+            var _user = await usermana.GetUserById(id);
             if (_user is null)
                 return new ServiceResponseData { Message = "Usuario no encontrado" };
 
@@ -147,5 +156,85 @@ namespace Application.Services.Implementation
             return new ServiceResponseData { Message = "Usuario actualizado con exito", Success = true, Data = result };
 
         }
+
+        public async Task<AuthenticatedUserDto> GetAuthenticatedUserAsync(ClaimsPrincipal user)
+        {
+            if (!user.Identity?.IsAuthenticated ?? true)
+            {
+                return new AuthenticatedUserDto { IsAuthenticated = false };
+                
+            }
+            var email = user.FindFirst(ClaimTypes.Email)?.Value;
+            var _user = await   usermana.GetUserByEmail(email!);
+
+            var userDto = new AuthenticatedUserDto
+            {
+                IsAuthenticated = true,
+                Id = _user?.Id,
+                Name = _user?.FullName,
+                Email = user.FindFirst(ClaimTypes.Email)?.Value,
+                Roles = user.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList()
+            };
+
+            return userDto;
+        }
+        public async Task<string?> GetRoleIdByEmail(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return null;
+            }
+            var user = await usermana.GetUserByEmail(email);
+            if (user == null)
+            {
+                return null;
+            }
+            var role = await rolemana.GetRoleIdByEmail(email);
+            return role;
+        }
+        public async Task<bool> AddUserToRole(string userid ,string role)
+        {
+            if (string.IsNullOrEmpty(userid) || string.IsNullOrEmpty(role))
+            {
+                return false;
+            }
+            var user = await usermana.GetUserById(userid);
+            if (user == null)
+            {
+                return false;
+            }
+            var oldRole = await rolemana.GetRoleIdByEmail(user.Email!);
+            if (!string.IsNullOrEmpty(oldRole))
+            {
+                
+                await rolemana.DeleteUserRole(user, oldRole);
+            }
+            
+          return  await rolemana.AddUserToRole(user,role);
+            
+        }
+        public async Task<IdentityResult> ResetPassword(string id ,PasswordResetDto password)
+        {
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(password.oldPassword) || string.IsNullOrEmpty(password.newPassword))
+            {
+                throw new Exception("Id and password must be provided");
+            }
+            var user = await usermana.GetUserById(id);
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+  
+            bool LoginResult = await usermana.LoginUser(user.Email!,password.oldPassword);
+                if (!LoginResult)
+                    throw new ArgumentException("Wrong password" );
+
+            string token = await usermana.GeneratePasswordResetToken(user);
+               var result = await usermana.ResetPassword(user, token, password.newPassword);
+            return result;
+        } 
+
+
     }
+
 }

@@ -7,6 +7,6 @@ namespace Dominio.Interfaces
 {
     public interface IClienteRepository : IBaseRepository<Cliente>
     {
-        Task<IEnumerable<Cliente>> GetAllFilterAsync(ClientesParameters param);
+        Task<PagedResults<Cliente>> GetAllFilterAsync(ClientesParameters param);
     }
 }

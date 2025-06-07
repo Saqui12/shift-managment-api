@@ -15,7 +15,7 @@ namespace Application.Services.DTOs.Turno
 
         public TimeOnly HoraFin { get; set; }
 
-        public string? Estado { get; set; } = "confirmado";
+        public string Estado { get; set; } = "confirmado";
       
         public decimal MontoTotal { get; set; }
 

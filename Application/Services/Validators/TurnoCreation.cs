@@ -14,14 +14,14 @@ namespace Application.Services.Validators
                 .WithMessage("La fecha no puede estar vacia")
                 .Must(x => x > DateOnly.FromDateTime(DateTime.Now))
                 .WithMessage("La fecha debe ser mayor a la fecha actual");
-            RuleFor(x => x.HoraInicio)
+            RuleFor(x=>x.HoraFin)
                 .NotEmpty()
-                .WithMessage("La hora de inicio debe ser mayor a las 8:00")
-                .Must(x => x > TimeOnly.Parse("08:00"))
-                .WithMessage("La hora debe ser mayor a la hora actual");
+                .WithMessage("La hora de fin debe ser mayor a la hora de inicio")
+                .Must((x, HoraFin) => HoraFin > x.HoraInicio)
+                .WithMessage("La hora de fin debe ser mayor a la hora de inicio");
             RuleFor(x => x.Estado)
-                .Matches(@"^(confirmado|completado|cancelado)$")
-                .WithMessage("El estado debe ser uno de los siguientes : confirmado ; completado ; cancelado");
+                .Matches(@"^(pending|confirmed|confirmed|canceled)$")
+                .WithMessage("El estado debe ser uno de los siguientes : pending ; confirmed ; completed; canceled");
             RuleFor(x => x.MontoTotal)
                 .NotEmpty()
                 .WithMessage("El monto no puede estar vacio")

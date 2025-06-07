@@ -7,8 +7,8 @@ namespace Dominio.Models.Parameters
     public class TurnosParameters : RequestParameters
     {
         public string? Estado { get; set; }
-        public string? Recurso { get; set; }
-        public string? ApellidoCliente { get; set; }
+        public Guid? Recurso { get; set; }
+        public string? NombreApellidoCliente { get; set; }
         public TimeOnly HoraInicio { get; set; } = TimeOnly.MinValue;
         public TimeOnly HoraFin { get; set; } = TimeOnly.MaxValue;
         public DateOnly FechaHasta { get; set; } = DateOnly.FromDateTime(DateTime.Now).AddMonths(12);

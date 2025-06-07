@@ -158,7 +158,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             HorariosDisponibilidadId = new Guid("07bc1990-5e8d-4237-a9e4-8e6b8ba51237"),
-                            DiaSemana = "Wendesday",
+                            DiaSemana = "Wednesday",
                             HoraApertura = new TimeOnly(8, 0, 0),
                             HoraCierre = new TimeOnly(20, 0, 0),
                             RecursoId = new Guid("07bc1990-5e8d-4237-a9e4-8e6b8ba56537")
@@ -625,7 +625,7 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Dominio.Entities.HorariosDisponibilidad", b =>
                 {
                     b.HasOne("Dominio.Entities.Recurso", "Recurso")
-                        .WithMany("HorariosDisponibilidads")
+                        .WithMany("HorariosDisponibilidad")
                         .HasForeignKey("RecursoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -723,7 +723,7 @@ namespace Infrastructure.Migrations
                 {
                     b.Navigation("Bloqueos");
 
-                    b.Navigation("HorariosDisponibilidads");
+                    b.Navigation("HorariosDisponibilidad");
 
                     b.Navigation("Turnos");
                 });

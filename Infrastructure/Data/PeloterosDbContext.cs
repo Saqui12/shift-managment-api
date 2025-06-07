@@ -47,6 +47,7 @@ public partial class PeloterosDbContext : IdentityDbContext<AppUser>
         modelBuilder.ApplyConfiguration(new HorariosDisponibilidadConfiguration());
         modelBuilder.ApplyConfiguration(new AppUserConfiguration());
         modelBuilder.ApplyConfiguration(new RolesUserConfiguration());
+        //modelBuilder.ApplyConfiguration(new TurnosConfiguration());
 
 
 

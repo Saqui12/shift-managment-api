@@ -6,5 +6,6 @@ namespace Dominio.Interfaces.Authentication
     {
         Task<string?> GetRoleIdByEmail(string email);
         Task<bool> AddUserToRole(AppUser user, string roleName);
+        Task<bool> DeleteUserRole(AppUser user, string roleName);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Application.Services.DTOs
+﻿namespace Application.Services.DTOs.Auth
 {
     public record LoginResponse
     (bool Success = false,

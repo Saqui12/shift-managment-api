@@ -10,6 +10,10 @@ namespace Infrastructure.Repositories.Authentication
         {
             return (await usermanager.AddToRoleAsync(user, roleName)).Succeeded;
         }
+        public async Task<bool> DeleteUserRole(AppUser user, string roleName)
+        {
+            return(await usermanager.RemoveFromRoleAsync(user, roleName)).Succeeded;
+        }
 
         public async Task<string?> GetRoleIdByEmail(string email)
         {

@@ -5,6 +5,7 @@ using Infrastructure.Data;
 using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 
 namespace Infrastructure.Repositories
@@ -14,25 +15,28 @@ namespace Infrastructure.Repositories
         public TurnoRepository(PeloterosDbContext context)
             : base(context)
         { }
-        public async Task<IEnumerable<Turno>> GetByWeek(DateOnly week)
+        public async Task<IEnumerable<Turno>> GetOverShift(Guid recursoId,DateOnly fecha, TimeOnly horaInicio, TimeOnly horaFinal)
         {
-
-
+            ;
             return await _context.Turnos
-                .Where(x => x.Fecha >= week && x.Fecha <=week.AddDays(7))
-                .Include(p=>p.Cliente)
+                .AsNoTracking()
+                .Where(x => x.Fecha == fecha &&
+                            x.Recurso.RecursoId == recursoId &&
+                            x.HoraInicio < horaFinal &&
+                            x.HoraFin > horaInicio)
                 .ToListAsync();
         }
-        public async Task<IEnumerable<Turno>> GetFiltered(TurnosParameters param)
+        public async Task<PagedResults<Turno>> GetFiltered(TurnosParameters param)
         {
             var query = _context.Turnos.AsQueryable();
 
             if(!string.IsNullOrEmpty(param.Estado))
-                query= query.Where(x => x.Estado == param.Estado);
-            if (!string.IsNullOrEmpty(param.ApellidoCliente))
-                query = query.Where(x => x.Cliente.Apellido == param.ApellidoCliente);
-            if (!string.IsNullOrEmpty(param.Recurso))
-                query = query.Where(x => x.Recurso.Nombre == param.Recurso);
+                query= query.Where(x => x.Estado!.ToLower().Contains(param.Estado.ToLower()));
+            if (!string.IsNullOrEmpty(param.NombreApellidoCliente))
+                query = query.Where(x => x.Cliente.Apellido.ToLower().Contains(param.NombreApellidoCliente.ToLower())
+                                        || x.Cliente.Nombre.ToLower().Contains(param.NombreApellidoCliente.ToLower()));
+            if (param.Recurso!= null)
+                query = query.Where(x => x.Recurso.RecursoId == param.Recurso);
 
             query = query.Where(x => x.Fecha >= param.FechaDesde && x.Fecha <= param.FechaHasta);
             query = query.Where(x => x.HoraInicio >= param.HoraInicio && x.HoraFin <=param.HoraFin);
@@ -42,13 +46,20 @@ namespace Infrastructure.Repositories
                 var orderQuery = param.OrderBy + " descending";
                 query = query.OrderBy(orderQuery);
             }
-                
-                return await query.AsNoTracking()
+             
+                var count = await query.CountAsync();
+
+               var item= await query.AsNoTracking()
                 .Skip((param.PageNumber-1)*param.PageSize)
                 .Take(param.PageSize)
                 .Include(t => t.Cliente)
                 .Include(p => p.Recurso)
                 .ToListAsync();
+
+
+
+            return new PagedResults<Turno>(item, count, param.PageNumber, param.PageSize);
+   
         }
     }
 

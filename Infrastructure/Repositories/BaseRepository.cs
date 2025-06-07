@@ -15,7 +15,7 @@ namespace Infrastructure.Repositories
         }
 
 
-        public async Task<IEnumerable<T>> GetAllAsync() => await _context.Set<T>().AsNoTracking().ToListAsync();
+        public async virtual Task<IEnumerable<T>> GetAllAsync() => await _context.Set<T>().AsNoTracking().ToListAsync();
         public async Task<T> GetByIdAsync(Guid id) => await _context.Set<T>().FindAsync(id);
         public void Add(T entity) =>  _context.Set<T>().Add(entity);
 

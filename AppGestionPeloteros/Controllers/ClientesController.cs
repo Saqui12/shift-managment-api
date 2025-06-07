@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AppGestionPeloteros.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     public class ClientesController(IClientesService _service) : Controller
     {
@@ -16,7 +16,18 @@ namespace AppGestionPeloteros.Controllers
         public async Task<IActionResult> GetClientesFilter([FromQuery] ClientesParameters param)
         {
             var clientes = await _service.GetAllFilterAsync(param);
-            return Ok(clientes);
+
+            var metadata = new
+            {
+                clientes.TotalCount,
+                clientes.PageSize,
+                clientes.HasNextPage,
+                clientes.HasPreviousPage,
+                clientes.TotalPages,
+                clientes.PageNumber
+            };
+            Response.Headers["X-Pagination"] = System.Text.Json.JsonSerializer.Serialize(metadata);
+            return Ok(clientes.Items);
         }
         [HttpPost]
         public async Task<IActionResult> CreateCliente([FromBody]ClienteCreationDto client)
@@ -41,7 +52,7 @@ namespace AppGestionPeloteros.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCliente([FromBody]Guid id,[FromBody] ClienteDto cliente)
+        public async Task<IActionResult> UpdateCliente(Guid id,[FromBody] ClienteDto cliente)
         {
             await _service.UpdateAsync(id, cliente);
             return NoContent();

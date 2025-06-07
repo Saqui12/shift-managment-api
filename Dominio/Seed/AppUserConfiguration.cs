@@ -35,7 +35,7 @@ namespace Dominio.Seed
                 },
                 new AppUser
                 {
-                    Id = "078a1ad8e-302a-4e75-a156-f997bb40d131",
+                    Id = "03bc1990-5e8d-4237-a9e4-8e6b8ba56237",
                     FullName = "Employee1234!",
                     Email = "employee@gmail.com",
                     PasswordHash = "AQAAAAIAAYagAAAAEPhdcQnNXI8EKVZakKNmRPedmr+sBV1yxeBAeSOAqEvtujsYAgMTQ7Sq2/aZ36mqQg==",
@@ -54,7 +54,7 @@ namespace Dominio.Seed
                 },
                 new AppUser
                 {
-                    Id = "079a1rd8e-302a-4e75-a156-f997bb40d131",
+                    Id = "03bc1990-5e8d-4237-a9e4-8e6b8ba56437",
                     FullName = "User1234!",
                     Email = "user@gmail.com",
                     PasswordHash = "AQAAAAIAAYagAAAAEN6erUfNGTWPzpDB0rcvN8mAsr+Oed4PWckqlJPCRUNizdj58HRYN8B9HF9Xc3rSiQ==",
