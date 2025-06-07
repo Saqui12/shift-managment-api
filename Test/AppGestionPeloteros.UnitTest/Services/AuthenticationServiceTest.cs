@@ -58,7 +58,7 @@ namespace Test.AppGestionPeloteros.UnitTest.Services
             _tokenManaMock.Setup(t => t.GenerateToken(claims)).Returns("jwt-token");
 
             _mapperMock.Setup(m => m.Map<AppUser>(loginUser)).Returns(appUser);
-            _userManaMock.Setup(u => u.LoginUser(appUser)).ReturnsAsync(true);
+            _userManaMock.Setup(u => u.LoginUser(loginUser.Email,loginUser.Password)).ReturnsAsync(true);
             _userManaMock.Setup(u => u.GetUserByEmail(loginUser.Email)).ReturnsAsync(appUser);
             _tokenManaMock.Setup(t => t.GenerateToken(It.IsAny<List<Claim>>())).Returns("jwt-token");
             _tokenManaMock.Setup(t => t.getRefreshToken()).Returns("refresh-token");
@@ -78,7 +78,7 @@ namespace Test.AppGestionPeloteros.UnitTest.Services
             var user = new AppUser();
             var userlogin = new LoginUser  { Email = "",Password = "" };
 
-            _userManaMock.Setup(x => x.LoginUser(user)).ReturnsAsync(false);
+            _userManaMock.Setup(x => x.LoginUser(userlogin.Email,userlogin.Password)).ReturnsAsync(false);
             _mapperMock.Setup(t => t.Map<AppUser>(userlogin)).Returns(user);
 
             var result = await _service.Login(userlogin);
