@@ -52,7 +52,6 @@ namespace AppGestionPeloteros.Controllers
         }
 
 
-        [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> Me()
         {
