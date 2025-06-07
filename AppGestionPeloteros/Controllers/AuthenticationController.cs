@@ -19,13 +19,13 @@ namespace AppGestionPeloteros.Controllers
             var result = await _service.Login(loginUser);
             if (result.Success)
             {
-                Response.Cookies.Append("JWT", result.Token, new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.None,
-                    Path = "/"
-                });
+                //Response.Cookies.Append("JWT", result.Token, new CookieOptions
+                //{
+                //    HttpOnly = true,
+                //    Secure = true,
+                //    SameSite = SameSiteMode.None,
+                //    Path = "/"
+                //});
                 return Ok(result);
             }
             return BadRequest(result);

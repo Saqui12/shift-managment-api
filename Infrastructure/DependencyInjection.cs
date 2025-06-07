@@ -92,18 +92,18 @@ namespace Infrastructure
                       ClockSkew = TimeSpan.Zero,
                       IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
                   };
-                  options.Events = new JwtBearerEvents
-                  {
-                      OnMessageReceived = context =>
-                      {
-                          // Extraer token desde la cookie
-                          if (context.Request.Cookies.ContainsKey("JWT"))
-                          {
-                              context.Token = context.Request.Cookies["JWT"];
-                          }
-                          return Task.CompletedTask;
-                      }
-                  };
+                  //options.Events = new JwtBearerEvents
+                  //{
+                  //    OnMessageReceived = context =>
+                  //    {
+                  //        // Extraer token desde la cookie
+                  //        if (context.Request.Cookies.ContainsKey("JWT"))
+                  //        {
+                  //            context.Token = context.Request.Cookies["JWT"];
+                  //        }
+                  //        return Task.CompletedTask;
+                  //    }
+                  //};
               });
 
 
