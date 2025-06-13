@@ -33,7 +33,7 @@ namespace AppGestionPeloteros.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] CreateUser createUser)
         {
-            // Call the authentication service to perform registration
+            
             var result = await _service.Register(createUser);
             if (result.Success)
             {
@@ -106,7 +106,7 @@ namespace AppGestionPeloteros.Controllers
         [HttpGet("getUserRole/{email}")]
         public async Task<IActionResult> GetUserRoleByEmail(string email)
         {
-            // Call the authentication service to get user details
+           
             var result = await _service.GetRoleIdByEmail(email);
             if (!result.IsNullOrEmpty())
             {
@@ -120,7 +120,7 @@ namespace AppGestionPeloteros.Controllers
         [HttpPut("AddUserToRole/{userid}")]
         public async Task<IActionResult> AddUserToRole(string userid, [FromBody] string role)
         {
-            // Call the authentication service to get user details
+            
             var result = await _service.AddUserToRole(userid, role);
             if (result)
             {
@@ -134,7 +134,7 @@ namespace AppGestionPeloteros.Controllers
         [HttpPut("updateuser/{id}")]
         public async Task<IActionResult> UpdateUser(string userid, [FromBody] UpdateUser updateUser)
         {
-            // Call the authentication service to perform user update
+            
             var result = await _service.Update(userid , updateUser);
             if (result.Success)
             {
@@ -147,12 +147,12 @@ namespace AppGestionPeloteros.Controllers
         public IActionResult Logout()
         {
             // Borrar la cookie del token JWT
-            Response.Cookies.Delete("JWT", new CookieOptions
-            {
-                Path = "/",
-                Secure = true,
-                SameSite = SameSiteMode.Lax
-            });
+            //Response.Cookies.Delete("JWT", new CookieOptions
+            //{
+            //    Path = "/",
+            //    Secure = true,
+            //    SameSite = SameSiteMode.Lax
+            //});
 
             return Ok(new { message = "Sesión cerrada correctamente" });
         }
@@ -167,14 +167,14 @@ namespace AppGestionPeloteros.Controllers
 
                 return BadRequest(new
                 {
-                    message = "Error al restablecer la contraseña",
+                    message = "Error reseting password",
                     errors = errors
                 });
 
             }
             
             
-            return Ok(new { message = "Contraseña restablecida correctamente" });
+            return Ok(new { message = "Password Updated" });
         }
 
     }

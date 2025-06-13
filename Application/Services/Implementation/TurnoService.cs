@@ -19,7 +19,9 @@ namespace Application.Services.Implementation
 {
     public class TurnoService(IRepositoryManager _manager, IMapper _mapper,
             IValidator<PagoCreationDto> createPago,
-IValidator<ClienteCreationDto> @object, IValidator<TurnoCreationDto> createTurnoValidator,
+            IValidator<ClienteCreationDto> @object,
+            IValidator<TurnoCreationDto> createTurnoValidator,
+            IValidator<TurnoUpdateDto> updateTurnoValidator,
             IValidationService _validation) : ITurnoService
     {
         // Ask for clientid , if doesnt exist, creat one. If exist go on
@@ -113,7 +115,7 @@ IValidator<ClienteCreationDto> @object, IValidator<TurnoCreationDto> createTurno
             if (turnoUpdate.Pago == null && turnoUpdate.Turno == null)
                 return new ServiceResponse { Message = "A Shift and payment must be provided" };
 
-            await _validation.ValidateAsync(turnoUpdate.Turno, createTurnoValidator);
+            await _validation.ValidateAsync(turnoUpdate, updateTurnoValidator);
             await _validation.ValidateAsync(turnoUpdate.Pago!, createPago);
 
 

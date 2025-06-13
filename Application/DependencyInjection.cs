@@ -25,6 +25,7 @@ namespace Application
 
             services.AddScoped<IValidator<ClienteCreationDto>, ClienteCreation>();
             services.AddScoped<IValidator<TurnoCreationDto>, TurnoCreation>();
+            services.AddScoped<IValidator<TurnoUpdateDto>,UpdateTurno >();
             services.AddScoped<IValidator<PagoCreationDto>, PagoCreation>();
             services.AddScoped<IValidator<CreateUser>, CreationUser>();
             services.AddScoped<IValidator<UpdateUser>, UpdateUserCreation>();
