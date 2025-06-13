@@ -32,13 +32,13 @@ namespace Application.Services.Implementation
         public async Task<LoginResponse> Login(LoginUser loginuser)
         {
             if (loginuser == null)
-                return new LoginResponse { Message = "Error al iniciar sesion" };
+                return new LoginResponse { Message = "Error sign in" };
             // validation
 
          
             bool LoginResult = await usermana.LoginUser(loginuser.Email,loginuser.Password);
             if (!LoginResult)
-                return new LoginResponse { Message = "Error al iniciar sesion" };
+                return new LoginResponse { Message = "Error sign in" };
 
             var _user = await usermana.GetUserByEmail(loginuser.Email);
             var claims = await usermana.GetUserClaims(_user!.Email!);
@@ -53,7 +53,7 @@ namespace Application.Services.Implementation
                 {
                     Token = jwttoken,
                     RefreshToken = refreshtoken,
-                    Message = "Inicio de sesion exitoso",
+                    Message = "Sign in successful",
                     Success = true
                 };
         }
@@ -89,7 +89,7 @@ namespace Application.Services.Implementation
 
             var result = await usermana.CreateUser(model);
             if (!result)
-                return new ServiceResponse { Message = "Error al registrar el usuario" };
+                return new ServiceResponse { Message = "Error registering the user" };
 
             var _user = await usermana.GetUserByEmail(createUser.Email);
             var Users = await usermana.GetAllUsers();
@@ -106,41 +106,41 @@ namespace Application.Services.Implementation
 
             }
 
-            return new ServiceResponse { Message = "Usuario registrado con exito", Success = true };
+            return new ServiceResponse { Message = "User registered  ", Success = true };
         }
         public async Task<ServiceResponse> DeleteUser(string id)
         {
             if (id == null)
-                return new ServiceResponse { Message = "Debe ingresar un id" };
+                return new ServiceResponse { Message = "Id is required" };
             var user= await usermana.GetUserById(id);
   
             if (user is null)
-                return new ServiceResponse { Message = "Usuario no encontrado" };
+                return new ServiceResponse { Message = "User not found" };
 
             await usermana.DeleteUserByEmail(user.Email!);
-            return new ServiceResponse { Message = "Usuario eliminado con exito", Success = true };
+            return new ServiceResponse { Message = "User deleted", Success = true };
         }
 
         public async Task<ServiceResponseData> GetByEmail(string email)
         {
             if (email == null)
-                return new ServiceResponseData { Message = "Debe ingresar un email" };
+                return new ServiceResponseData { Message = "Email is required" };
             var user = await usermana.GetUserByEmail(email);
             if (user is null)
-                return new ServiceResponseData { Message = "Usuario no encontrado" };
+                return new ServiceResponseData { Message = "User not found" };
 
-            return new ServiceResponseData { Message = "Usuario encontrado", Success = true, Data = user };
+            return new ServiceResponseData { Message = "Usuario found", Success = true, Data = user };
 
         }
         public async Task<ServiceResponseData> Update(string id,UpdateUser user)
         {
             if (user == null)
-                return new ServiceResponseData { Message = "Debe ingresar un usuario" };
+                return new ServiceResponseData { Message = "User values are required" };
 
             await _validator.ValidateAsync(user, updateUserValidate);
             var _user = await usermana.GetUserById(id);
             if (_user is null)
-                return new ServiceResponseData { Message = "Usuario no encontrado" };
+                return new ServiceResponseData { Message = "User not found" };
 
             _user.FullName = user.FullName;
             _user.PhoneNumber = user.PhoneNumber;
@@ -152,8 +152,8 @@ namespace Application.Services.Implementation
             var result = await usermana.UpdateUser(_user);
                 
             if (result is null)
-                return new ServiceResponseData { Message = "Error al actualizar el usuario" };
-            return new ServiceResponseData { Message = "Usuario actualizado con exito", Success = true, Data = result };
+                return new ServiceResponseData { Message = "Error updating the user" };
+            return new ServiceResponseData { Message = "User updated", Success = true, Data = result };
 
         }
 
