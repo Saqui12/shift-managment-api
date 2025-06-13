@@ -22,14 +22,10 @@ namespace Infrastructure
 
 
 
-            //services.AddDbContext<PeloterosDbContext>(options =>
-            //     options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionString_DB")));
+    
 
             services.AddDbContext<PeloterosDbContext>(options =>
                  options.UseNpgsql(configuration["ConnectionString_DB"]));
-
-
-
 
 
             //var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
