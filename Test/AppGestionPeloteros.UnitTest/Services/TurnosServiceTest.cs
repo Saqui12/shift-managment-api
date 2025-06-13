@@ -31,6 +31,9 @@ public class TurnoServiceTest
         _mockTurnoValidator = new Mock<IValidator<TurnoCreationDto>>();
         _mockValidation = new Mock<IValidationService>();
 
+       
+        var mockTurnoUpdateValidator = new Mock<IValidator<TurnoUpdateDto>>();
+
         _mockRepoManager.Setup(r => r.Turno).Returns(_mockTurnoRepo.Object);
 
         _service = new TurnoService(
@@ -39,6 +42,7 @@ public class TurnoServiceTest
             _mockPagoValidator.Object,
             _mockClienteValidator.Object,
             _mockTurnoValidator.Object,
+            mockTurnoUpdateValidator.Object, 
             _mockValidation.Object
         );
     }
