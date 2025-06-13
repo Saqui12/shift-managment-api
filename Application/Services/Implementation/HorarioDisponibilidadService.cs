@@ -11,7 +11,7 @@ namespace Application.Services.Implementation
         public async Task<HorarioDisponibilidadDto> CreateAsync(HorarioDisponibilidadCreation disponible, CancellationToken cancellationToken = default)
         {
             if (disponible is null)
-                throw new ArgumentNullException("No se ingreso un nuevo Horario de Disponibilidad");
+                throw new ArgumentNullException("Values for availability must be given");
 
             //validation
             var horario=  _mapper.Map<HorariosDisponibilidad>(disponible);
@@ -27,10 +27,10 @@ namespace Application.Services.Implementation
         public async Task DeleteAsync(Guid Id, CancellationToken cancellationToken = default)
         {
             if (Id == Guid.Empty)
-                throw new ArgumentNullException("El Id no puede ser vacio");
+                throw new ArgumentNullException("Id is required");
             var horario = _respo.GetByIdAsync(Id);
             if (horario is null)
-                throw new KeyNotFoundException("El Horario de Disponibilidad no existe");
+                throw new KeyNotFoundException("Availability not found");
             _respo.Delete(horario.Result);
             await _unit.SaveChangesAsync();
 
@@ -44,14 +44,14 @@ namespace Application.Services.Implementation
         public async Task UpdateAsync(Guid Id, UpdateHorariosDisponibilidadDto Dto, CancellationToken cancellationToken = default)
         {
             if (Id == Guid.Empty)
-                throw new ArgumentNullException("El Id no puede ser vacio");
+                throw new ArgumentNullException("Id is required");
             if (Dto is null)
-                throw new ArgumentNullException("No se ingreso un nuevo Horario de Disponibilidad");
+                throw new ArgumentNullException("Values for availability must be given");
            
             var horario = _respo.GetByIdAsync(Id);
             
             if (horario is null)
-                throw new KeyNotFoundException("El Horario de Disponibilidad no existe");
+                throw new KeyNotFoundException("Availability not found");
            
             var horarioUpdate = _mapper.Map<HorariosDisponibilidad>(Dto);
             horarioUpdate.HorariosDisponibilidadId = Id;
