@@ -1,4 +1,4 @@
-#  Management API - Entertainment Center
+# Shift Management API - Entertainment Center
 
 This RESTful API was developed to manage an entertainment center (such as sports courts, recreational halls, or game centers). It focuses on backend best practices using modern .NET technologies and clean architecture.
 ## Key Features
