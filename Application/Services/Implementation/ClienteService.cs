@@ -28,7 +28,7 @@ namespace Application.Services.Implementation
         {
             var cliente = await _repo.GetByIdAsync(Id);
             if (cliente is null)
-                throw new KeyNotFoundException("El cliente no existe");
+                throw new KeyNotFoundException("Client not found");
             return _mapper.Map<ClienteDto>(cliente);
         }
 
@@ -36,7 +36,7 @@ namespace Application.Services.Implementation
         {
             var cliente = await _repo.GetByIdAsync(Id);
             if (cliente is null)
-                throw new KeyNotFoundException("El cliente no existe");
+                throw new KeyNotFoundException("Client not found");
             _repo.Delete(cliente);
             await _unit.SaveChangesAsync();
 
@@ -59,9 +59,9 @@ namespace Application.Services.Implementation
         {
             var cliente = await _repo.GetByIdAsync(Id);
             if (cliente is null)
-                throw new KeyNotFoundException("El cliente no existe");
+                throw new KeyNotFoundException("Client not found");
             if (Id != cliente.ClienteId)
-                throw new ArgumentException("El id no coincide con el cliente a modificar");
+                throw new ArgumentException("Id don't match");
 
             _repo.Update(_mapper.Map<Cliente>(Dto));
             await _unit.SaveChangesAsync();

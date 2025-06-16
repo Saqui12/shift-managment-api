@@ -32,7 +32,7 @@ namespace AppGestionPeloteros.Controllers
             await _service.UpdateRecurso(id, recurso);
             return NoContent();
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "NotAllowed")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {

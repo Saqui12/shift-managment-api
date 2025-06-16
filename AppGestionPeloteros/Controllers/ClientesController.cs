@@ -44,6 +44,7 @@ namespace AppGestionPeloteros.Controllers
             return Ok(cliente);
         }
 
+        [Authorize(Roles = "NotAllowed")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCliente(Guid id)
         {
