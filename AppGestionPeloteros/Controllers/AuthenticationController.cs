@@ -19,13 +19,7 @@ namespace AppGestionPeloteros.Controllers
             var result = await _service.Login(loginUser);
             if (result.Success)
             {
-                //Response.Cookies.Append("JWT", result.Token, new CookieOptions
-                //{
-                //    HttpOnly = true,
-                //    Secure = true,
-                //    SameSite = SameSiteMode.None,
-                //    Path = "/"
-                //});
+
                 return Ok(result);
             }
             return BadRequest(result);
@@ -74,7 +68,7 @@ namespace AppGestionPeloteros.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "NotAllowed")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
@@ -116,7 +110,7 @@ namespace AppGestionPeloteros.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "NotAllowed")]
         [HttpPut("AddUserToRole/{userid}")]
         public async Task<IActionResult> AddUserToRole(string userid, [FromBody] string role)
         {
@@ -145,18 +139,11 @@ namespace AppGestionPeloteros.Controllers
 
         [HttpPost("logout")]
         public IActionResult Logout()
-        {
-            // Borrar la cookie del token JWT
-            //Response.Cookies.Delete("JWT", new CookieOptions
-            //{
-            //    Path = "/",
-            //    Secure = true,
-            //    SameSite = SameSiteMode.Lax
-            //});
+        {          
 
             return Ok(new { message = "Sesión cerrada correctamente" });
         }
-        [Authorize]
+        [Authorize(Roles = "NotAllowed")]
         [HttpPost("resetPassword/{id}")]
         public async Task<IActionResult> resetPassword(string id, [FromBody] PasswordResetDto pass)
         {

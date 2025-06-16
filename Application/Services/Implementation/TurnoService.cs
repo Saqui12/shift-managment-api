@@ -24,12 +24,12 @@ namespace Application.Services.Implementation
             IValidator<TurnoUpdateDto> updateTurnoValidator,
             IValidationService _validation) : ITurnoService
     {
-        // Ask for clientid , if doesnt exist, creat one. If exist go on
+    
         public async Task<TurnoDto> CreateAsync(TurnoCompletoDto turnoCompleto, CancellationToken cancellationToken = default)
         {
 
-            //if (turnoCompleto.Pagocreation is null)
-            //    throw new ArgumentException($"must insert the values of payment {turnoCompleto.Pagocreation}");
+            if (turnoCompleto.Pagocreation is null)
+                throw new ArgumentException($"must insert the values of payment {turnoCompleto.Pagocreation}");
 
             await _validation.ValidateAsync(turnoCompleto.Turnocreation, createTurnoValidator);
             await _validation.ValidateAsync(turnoCompleto.Pagocreation, createPago);
