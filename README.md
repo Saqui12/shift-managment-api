@@ -15,7 +15,7 @@ This RESTful API was developed to manage an entertainment center (such as sports
 #### Backend Framework
 - **ASP.NET Core 8.0**: Provides the foundation for building the web API, including dependency injection, middleware, and routing.
 #### Database
-- **Entity Framework Core 8.0**: Used for database access and management, supporting both relational (SQL Server) and in-memory databases for testing.
+- **Entity Framework Core 8.0**: Used for database access and management
 - **PostgreSQL (Supabase)**: The primary relational database for production.
 #### Authentication & Authorization
 - **JWT (JSON Web Tokens)**: Secures API endpoints using bearer tokens for authentication.
@@ -45,7 +45,15 @@ This RESTful API was developed to manage an entertainment center (such as sports
 Go to : https://blue-plant-09cf3ff03.6.azurestaticapps.net/
 
 User : admin@gmail.com
+
 Password: Admin1234!
+
+or 
+
+User : employee@gmail.com
+
+Password: Employee1234!
+
 
 ## 📚 Status & Future Improvements
 
@@ -59,6 +67,6 @@ Password: Admin1234!
 
 ### Author
 
- Junior .NET Developer | Electromechanical Engineer
+Manuel Nunez
 
- LinkedIn https://www.linkedin.com/in/manuel-nunez12/
+LinkedIn https://www.linkedin.com/in/manuel-nunez12/
